@@ -1,7 +1,9 @@
 package com.demo.aspect;
 
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -14,28 +16,28 @@ public class LoggerAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerAspect.class);
 
-    @Pointcut("execution(* com.demo.controller.UserController.*(..))")
-    public void loggerpointcut() {
+//    @Pointcut("execution(* com.demo.controller.UserController.*(..))")
+    @Pointcut("within(com.demo.controller.UserController)")
+    public void loggerPointcut() {
     }
 
-    @AfterReturning(pointcut = "loggerpointcut()", returning = "userEntity")
-    public void afterReturning(JoinPoint joinPoint, UserEntity userEntity) {
-        logger.info("After returning from method: " + joinPoint.getSignature());
-        if (userEntity instanceof UserEntity) {
-            logger.info("Returned value: " + ((UserEntity) userEntity));
-        } else {
-            logger.info("Returned value: " + userEntity);
+    @Around("loggerPointcut()")
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object result = null;
+        try {
+            logger.info("Before method invoke: " + joinPoint.getSignature());
+            result = joinPoint.proceed();
+            logger.info("After returning from method: " + joinPoint.getSignature());
+            if (result instanceof UserEntity) {
+                logger.info("Returned value: " + result);
+            }
+        } catch (Exception e) {
+            logger.error("Exception thrown from method: " + joinPoint.getSignature());
+            logger.error("Exception message: " + e.getMessage());
+            throw e;  // rethrow the exception to maintain the program flow
+        } finally {
+            logger.info("After method invoke: " + joinPoint.getSignature());
         }
-    }
-
-    @AfterThrowing(pointcut = "loggerpointcut()", throwing = "e")
-    public void afterThrowing(JoinPoint joinPoint, Exception e) {
-        logger.error("Exception thrown from method: " + joinPoint.getSignature());
-        logger.error("Exception message: " + e.getMessage());
-    }
-
-    @After("loggerpointcut()")
-    public void after(JoinPoint joinPoint) {
-        logger.info("After method invoke: " + joinPoint.getSignature());
+        return result;
     }
 }
