@@ -4,6 +4,7 @@ import com.demo.entity.UserEntity;
 import com.demo.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,14 +19,29 @@ public class UserService {
     }
 
     public UserEntity saveUser(UserEntity user) {
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (Exception e) {
+           
+            throw new RuntimeException("Failed to save user", e);
+        }
     }
 
-    public Optional<UserEntity> getUserById(Long id) {
-        return userRepository.findById(id);
+    public UserEntity getUserById(Long id) {
+        try {
+            return userRepository.findById(id).orElseThrow();
+        } catch (Exception e) {
+            
+            throw new RuntimeException("Failed to retrieve user by id: " + id, e);
+        }
     }
 
     public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
+        try {
+            return userRepository.findAll();
+        } catch (Exception e) {
+            
+            throw new RuntimeException("Failed to retrieve all users", e);
+        }
     }
 }

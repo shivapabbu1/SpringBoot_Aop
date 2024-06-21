@@ -3,8 +3,6 @@ package com.demo.controller;
 import com.demo.entity.UserEntity;
 import com.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,20 +20,18 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<UserEntity> saveUser(@RequestBody UserEntity user) {
-        UserEntity savedUser = userService.saveUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    public UserEntity saveUser(@RequestBody UserEntity user) {
+        return userService.saveUser(user);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
-        Optional<UserEntity> userOptional = userService.getUserById(id);
-        return userOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public UserEntity getUserById(@PathVariable Long id) {
+    	return userService.getUserById(id);
+       
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserEntity>> getAllUsers() {
-        List<UserEntity> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public List<UserEntity> getAllUsers() {
+        return userService.getAllUsers();
     }
 }
