@@ -17,6 +17,11 @@ public class LoggerAspect {
     @Pointcut("execution(* com.demo.controller.UserController.*(..))")
     public void loggerpointcut() {
     }
+    
+    @Before("loggerpointcut()")
+    public void before(JoinPoint joinPoint) {
+        logger.info("Before method invoke: " + joinPoint.getSignature());
+    }
 
     @AfterReturning(pointcut = "loggerpointcut()", returning = "userEntity")
     public void afterReturning(JoinPoint joinPoint, UserEntity userEntity) {
