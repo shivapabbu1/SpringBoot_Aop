@@ -21,6 +21,26 @@ public class LoggerAspect {
     public void loggerPointcut() {
     }
 
+    // Within
+    @Pointcut("within(com.demo.controller.UserController)")
+    public void withinUserController() {}
+
+    // This
+    @Pointcut("this(com.demo.controller.UserController)")
+    public void proxyIsUserController() {}
+
+    // Target
+    @Pointcut("target(com.demo.service.UserService)")
+    public void targetIsUserService() {}
+
+    // Args
+    @Pointcut("args(com.demo.entity.UserEntity)")
+    public void methodsWithUserEntityArgument() {}
+
+    // Annotation
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.GetMapping)")
+    public void methodsWithGetMapping() {}
+
     @Around("loggerPointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = null;
