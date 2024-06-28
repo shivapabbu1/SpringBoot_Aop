@@ -1,5 +1,7 @@
 package com.demo.aspect;
 
+import java.util.List;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,8 +30,14 @@ public class LoggerAspect {
             logger.info("Before method invoke: " + joinPoint.getSignature());
             result = joinPoint.proceed();
             logger.info("After returning from method: " + joinPoint.getSignature());
+            
             if (result instanceof UserEntity) {
                 logger.info("Returned value: " + result);
+            } else if (result instanceof List) {
+                List<?> resultList = (List<?>) result;
+                if (!resultList.isEmpty() && resultList.get(0) instanceof UserEntity) {
+                    logger.info("Returned list of UserEntities: " + resultList);
+                }
             }
         } catch (Exception e) {
             logger.error("Exception thrown from method: " + joinPoint.getSignature());
