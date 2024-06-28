@@ -53,7 +53,7 @@ public class TransactionAspect {
         TransactionStatus status = currentTransaction.get();
         if (status != null) {
             transactionManager.rollback(status);
-            logger.error("Transaction rolled back due to exception: {}", exception.getCause());
+            logger.error("Transaction rolled back due to exception: {}", exception.getMessage());
             currentTransaction.remove();
         }
     }
